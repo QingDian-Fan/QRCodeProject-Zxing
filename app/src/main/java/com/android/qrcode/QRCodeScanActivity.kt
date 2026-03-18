@@ -3,7 +3,6 @@ package com.android.qrcode
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.android.qrcode.databinding.ActivityMainBinding
 import com.android.qrcode.databinding.ActivityQrCodeScanBinding
 import com.android.scan.AnalyzeCallback
 import com.android.scan.ScanQRCodeFragment
