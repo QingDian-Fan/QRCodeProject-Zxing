@@ -35,7 +35,7 @@
 #include <stdexcept>
 #include <string>
 
-#define PACKAGE "com/android/scan/NativeZxing"
+#define PACKAGE "com/android/scan/NativeZxing$"
 
 using namespace ZXing;
 
