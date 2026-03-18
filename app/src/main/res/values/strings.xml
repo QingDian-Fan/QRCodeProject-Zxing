@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">QR-Code</string>
+    <string name="scan_notice">将镜头对准二维码，即可自动扫描</string>
+    <string name="scan_failed">扫描失败</string>
+    <string name="title_zxing_scan">扫一扫</string>
+
+</resources>

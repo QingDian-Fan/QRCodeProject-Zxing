@@ -1,0 +1,47 @@
+plugins {
+	id 'com.android.library'
+	id 'maven-publish'
+	alias(libs.plugins.kotlin.android)
+}
+
+android {
+	namespace 'com.android.scan'
+	compileSdk 36
+
+	defaultConfig {
+		minSdk 21
+		targetSdk 36
+
+		externalNativeBuild {
+			cmake {
+				arguments \
+					"-DCMAKE_BUILD_TYPE=RelWithDebInfo", \
+					"-DANDROID_ARM_NEON=ON"
+			}
+		}
+
+		consumerProguardFiles 'consumer-rules.pro'
+	}
+
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_1_8
+		targetCompatibility JavaVersion.VERSION_1_8
+	}
+
+	externalNativeBuild {
+		cmake {
+			path file('src/main/cpp/CMakeLists.txt')
+		}
+	}
+
+	publishing {
+		singleVariant('release')
+	}
+	kotlinOptions {
+		jvmTarget = '1.8'
+	}
+}
+dependencies {
+	implementation libs.androidx.core.ktx
+}
+
