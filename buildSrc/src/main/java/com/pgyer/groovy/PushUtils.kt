@@ -52,13 +52,13 @@ class PushUtils {
         return mApiService
     }
 
-    fun uploaPgyerAPK(apkFile: File): PgyerData? {
+    fun uploaPgyerAPK(msg:String,apkFile: File): PgyerData? {
         val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA)
         //蒲公英账号配置
         val body: MultipartBody = MultipartBody.Builder().setType(MultipartBody.FORM)
             .addFormDataPart("_api_key", Config.APIKEY)
             .addFormDataPart("userKey", Config.USERKEY)
-            .addFormDataPart("buildUpdateDescription", "${Config.UPDATE_MSG_DESCRIPTION} - \n 更新时间${sdf.format(Date())}" )
+            .addFormDataPart("buildUpdateDescription", "打包类型：${msg}   \n更新说明${Config.UPDATE_MSG_DESCRIPTION}  \n 更新时间${sdf.format(Date())}" )
             .addFormDataPart("file", apkFile.name, apkFile.asRequestBody("application/octet-stream".toMediaTypeOrNull()))
             .build()
         val call = getApiService()?.uploadPgyerAPK(Config.PGYER_UPLOAD_URL, body)
@@ -117,8 +117,8 @@ class PushUtils {
         }
     }
 
-    fun doTask(apkFile: File) {
-        val responseData = uploaPgyerAPK(apkFile)
+    fun doTask(msg:String,apkFile: File) {
+        val responseData = uploaPgyerAPK(msg,apkFile)
         responseData?.let {
             sendDingMsg(it)
         }

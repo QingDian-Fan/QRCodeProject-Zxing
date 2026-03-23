@@ -26,7 +26,7 @@ tasks.register('assemblePgyerDebug') {
                 }
                 File apkFile = file.listFiles(filter)[0]
                 def mPushUtils = new PushUtils()
-                mPushUtils.doTask(apkFile)
+                mPushUtils.doTask("[Debug]",apkFile)
             }
         }
     }
