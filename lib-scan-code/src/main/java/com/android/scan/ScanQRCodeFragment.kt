@@ -17,6 +17,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.fangtian.scan.databinding.FragmentScanQrCodeBinding
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 class ScanQRCodeFragment : Fragment() {
     companion object {
@@ -31,6 +33,8 @@ class ScanQRCodeFragment : Fragment() {
     private var lastResultText: String? = null
     private var lastResultTime: Long = 0L
     private var intervalTime: Long = 5000L
+
+    private val workService = Executors.newSingleThreadExecutor()
 
     private val readerOptions = NativeZxing.ReaderOptions(
         tryHarder = true,
@@ -92,31 +96,33 @@ class ScanQRCodeFragment : Fragment() {
 
     @OptIn(ExperimentalGetImage::class)
     private fun processImageProxy(imageProxy: ImageProxy) {
-        val plane = imageProxy.planes[0]
-        val results = NativeZxing.readYBuffer(
-            plane.buffer,
-            plane.rowStride,
-            imageProxy.cropRect,
-            imageProxy.imageInfo.rotationDegrees,
-            readerOptions
-        )
+        workService.execute {
+            val plane = imageProxy.planes[0]
+            val results = NativeZxing.readYBuffer(
+                plane.buffer,
+                plane.rowStride,
+                imageProxy.cropRect,
+                imageProxy.imageInfo.rotationDegrees,
+                readerOptions
+            )
 
-        if (!results.isNullOrEmpty()) {
-            // --- 核心步骤：识别成功后获取 Bitmap ---
-            val successBitmap = imageProxy.toBitmap()
-            activity?.runOnUiThread {
-                // 回调给 Activity，带上 Bitmap
-                val resultText = results.first().text
-                val currentTime = System.currentTimeMillis()
-                if (resultText != lastResultText || (currentTime - lastResultTime) > intervalTime) {
-                    lastResultText = resultText
-                    lastResultTime = currentTime
-                    analyzeCallback?.onAnalyzeSuccess(successBitmap, results.first().text)
+            if (!results.isNullOrEmpty()) {
+                // --- 核心步骤：识别成功后获取 Bitmap ---
+                val successBitmap = imageProxy.toBitmap()
+                activity?.runOnUiThread {
+                    // 回调给 Activity，带上 Bitmap
+                    val resultText = results.first().text
+                    val currentTime = System.currentTimeMillis()
+                    if (resultText != lastResultText || (currentTime - lastResultTime) > intervalTime) {
+                        lastResultText = resultText
+                        lastResultTime = currentTime
+                        analyzeCallback?.onAnalyzeSuccess(successBitmap, results.first().text)
+                    }
+
                 }
-
             }
+            imageProxy.close()
         }
-        imageProxy.close()
     }
 
 

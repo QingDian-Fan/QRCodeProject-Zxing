@@ -1,26 +1,94 @@
 package com.android.scan
 
 import android.graphics.*
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import androidx.camera.core.Camera
+import java.util.concurrent.Executors
 
 
 object QRCodeUtils {
+    private val workService = Executors.newSingleThreadExecutor()
+    /*  fun analyzeQRCode(mBitmap: Bitmap, analyzeCallback: AnalyzeCallback?) {
+          workService.execute {
+              // 使用 ZxingCpp 解析
+              val results = NativeZxing.readBitmap(
+                  mBitmap,
+                  Rect(0, 0, mBitmap.width, mBitmap.height),
+                  0,
+                  NativeZxing.ReaderOptions(tryHarder = true, tryInvert = true)
+              )
+              mHandler.post {
+                  if (!results.isNullOrEmpty()) {
+                      analyzeCallback?.onAnalyzeSuccess(mBitmap, results.first().text)
+                  } else {
+                      analyzeCallback?.onAnalyzeFailed()
+                  }
+              }
+          }
 
-    fun analyzeQRCode(mBitmap: Bitmap, analyzeCallback: AnalyzeCallback?) {
+      }*/
 
-        // 使用 ZxingCpp 解析
-        val results = NativeZxing.readBitmap(
-            mBitmap,
-            Rect(0, 0, mBitmap.width, mBitmap.height),
-            0,
-            NativeZxing.ReaderOptions(tryHarder = true, tryInvert = true)
-        )
+    fun analyzeQRCode(
+        bitmap: Bitmap,
+        callback: AnalyzeCallback?,
+    ) {
+        workService.execute {
+            val options = NativeZxing.ReaderOptions().apply {
+                tryHarder = true
+                tryRotate = true
+                tryInvert = true
+                tryDownscale = false
+                minLineCount = 1
+            }
 
-        if (!results.isNullOrEmpty()) {
-            analyzeCallback?.onAnalyzeSuccess(mBitmap, results.first().text)
-        } else {
-            analyzeCallback?.onAnalyzeFailed()
+            var results = NativeZxing.readBitmap(
+                bitmap,
+                Rect(0, 0, bitmap.width, bitmap.height),
+                0,
+                options
+            )
+
+            if (!results.isNullOrEmpty()) {
+                callback?.onAnalyzeSuccess(bitmap, results.first().text)
+                return@execute
+            }
+
+            val scaled = Bitmap.createScaledBitmap(
+                bitmap,
+                bitmap.width * 2,
+                bitmap.height * 2,
+                true
+            )
+
+            results = NativeZxing.readBitmap(
+                scaled,
+                Rect(0, 0, scaled.width, scaled.height),
+                0,
+                options
+            )
+
+            if (!results.isNullOrEmpty()) {
+                callback?.onAnalyzeSuccess(bitmap, results.first().text)
+                return@execute
+            }
+
+            options.binarizer = NativeZxing.Binarizer.GLOBAL_HISTOGRAM
+
+            results = NativeZxing.readBitmap(
+                bitmap,
+                Rect(0, 0, bitmap.width, bitmap.height),
+                0,
+                options
+            )
+
+            if (!results.isNullOrEmpty()) {
+                callback?.onAnalyzeSuccess(bitmap, results.first().text)
+                return@execute
+            }
+
+            callback?.onAnalyzeFailed()
         }
     }
 

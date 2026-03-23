@@ -1,0 +1,39 @@
+import com.pgyer.groovy.PushUtils
+
+/**
+ * 蒲公英测试服务器
+ */
+tasks.register('assemblePgyerDebug') {
+    dependsOn "app:assembleDebug"
+    doLast {
+        println "start assembleDomesticFinalRelease ....."
+        this.subprojects.eachWithIndex { Project project, int index ->
+            if (project.name == "app") {
+                String apkPath = project.buildDir.path +
+                        File.separator + "outputs" +
+                        File.separator + "apk" +
+                        File.separator + "debug"
+                println("apkPath::"+apkPath)
+                def file = new File(apkPath)
+                FilenameFilter filter = new FilenameFilter() {
+                    @Override
+                    boolean accept(File tempFile, String name) {
+                        if (name.endsWith("apk")) {
+                            return true
+                        }
+                        return false
+                    }
+                }
+                File apkFile = file.listFiles(filter)[0]
+                def mPushUtils = new PushUtils()
+                mPushUtils.doTask(apkFile)
+            }
+        }
+    }
+}
+
+
+
+
+
+
