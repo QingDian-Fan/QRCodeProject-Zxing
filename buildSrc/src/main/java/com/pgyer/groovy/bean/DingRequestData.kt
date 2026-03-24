@@ -9,6 +9,7 @@ data class DingRequestData(
 
     data class At(
         val atMobiles: List<String>,
+        val atUserIds: List<String>?,
         val isAtAll: Boolean
     )
 

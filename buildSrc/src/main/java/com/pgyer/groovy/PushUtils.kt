@@ -58,7 +58,7 @@ class PushUtils {
         val body: MultipartBody = MultipartBody.Builder().setType(MultipartBody.FORM)
             .addFormDataPart("_api_key", Config.APIKEY)
             .addFormDataPart("userKey", Config.USERKEY)
-            .addFormDataPart("buildUpdateDescription", "打包类型：${msg}   \n 更新说明:${Config.UPDATE_MSG_DESCRIPTION}" )
+            .addFormDataPart("buildUpdateDescription", "${msg}${Config.UPDATE_MSG_DESCRIPTION}" )
             .addFormDataPart("file", apkFile.name, apkFile.asRequestBody("application/octet-stream".toMediaTypeOrNull()))
             .build()
         val call = getApiService()?.uploadPgyerAPK(Config.PGYER_UPLOAD_URL, body)
@@ -101,6 +101,7 @@ class PushUtils {
             ),
             at = DingRequestData.At(
                 atMobiles = mutableListOf("15555787310"),
+                atUserIds = mutableListOf("msd_yo0870sp0"),
                 isAtAll = false
             )
         )
