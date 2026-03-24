@@ -1,9 +1,19 @@
 import com.pgyer.groovy.PushUtils
 
+
+// 清理 APK 输出目录
+tasks.register("deleteApkPath") {
+    doLast {
+        delete("${rootDir}/app/build/")
+        println("******** APK 输出目录已清理 ********")
+    }
+}
+
 /**
  * 蒲公英测试服务器
  */
 tasks.register('assemblePgyerDebug') {
+    dependsOn "deleteApkPath"
     dependsOn "app:assembleDebug"
     doLast {
         println "start assembleDomesticFinalRelease ....."
