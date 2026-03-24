@@ -9,10 +9,7 @@ tasks.register('assemblePgyerDebug') {
         println "start assembleDomesticFinalRelease ....."
         this.subprojects.eachWithIndex { Project project, int index ->
             if (project.name == "app") {
-                String apkPath = project.buildDir.path +
-                        File.separator + "outputs" +
-                        File.separator + "apk" +
-                        File.separator + "debug"
+                String apkPath = project.buildDir.path + File.separator + "outputs" + File.separator + "apk" + File.separator + "debug"
                 println("apkPath::"+apkPath)
                 def file = new File(apkPath)
                 FilenameFilter filter = new FilenameFilter() {
@@ -26,7 +23,7 @@ tasks.register('assemblePgyerDebug') {
                 }
                 File apkFile = file.listFiles(filter)[0]
                 def mPushUtils = new PushUtils()
-                mPushUtils.doTask("[Debug]",apkFile)
+                mPushUtils.doTask(rootDir,"[Debug]",apkFile)
             }
         }
     }
