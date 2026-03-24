@@ -24,7 +24,7 @@
 - 基础依赖
 ```
   	dependencies {
-	        implementation 'com.github.QingDian-Fan:QRCodeProject-Zxing:v1.0.0'
+	        implementation 'com.github.QingDian-Fan:QRCodeProject-Zxing:v1.0.1'
 	}
 ```
 - 本项目基于camera采集画面进行识别，若要使用Camera对象实现打开手电筒功能需添加下面以来
