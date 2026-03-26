@@ -1,3 +1,4 @@
+```java
 package com.pgyer.groovy
 
 import com.pgyer.groovy.bean.NotificationChannel
@@ -41,3 +42,4 @@ object Config {
     val UPDATE_MSG_DESCRIPTION = "更新说明:xxxxxx"
 
 }
+```
