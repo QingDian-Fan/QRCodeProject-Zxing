@@ -10,7 +10,7 @@ tasks.register("deleteApkPath") {
 }
 
 /**
- * 蒲公英测试服务器
+ * 蒲公英Debug
  */
 tasks.register('assemblePgyerDebug') {
     dependsOn "deleteApkPath"
@@ -34,6 +34,66 @@ tasks.register('assemblePgyerDebug') {
                 File apkFile = file.listFiles(filter)[0]
                 def mPushUtils = new PushUtils()
                 mPushUtils.doTask(rootDir,"[Debug]",apkFile)
+            }
+        }
+    }
+}
+
+/**
+ * 蒲公英Release
+ */
+tasks.register('assemblePgyerRelease') {
+    dependsOn "deleteApkPath"
+    dependsOn "app:assembleRelease"
+    doLast {
+        println "start assembleDomesticFinalRelease ....."
+        this.subprojects.eachWithIndex { Project project, int index ->
+            if (project.name == "app") {
+                String apkPath = project.buildDir.path + File.separator + "outputs" + File.separator + "apk" + File.separator + "release"
+                println("apkPath::"+apkPath)
+                def file = new File(apkPath)
+                FilenameFilter filter = new FilenameFilter() {
+                    @Override
+                    boolean accept(File tempFile, String name) {
+                        if (name.endsWith("apk")) {
+                            return true
+                        }
+                        return false
+                    }
+                }
+                File apkFile = file.listFiles(filter)[0]
+                def mPushUtils = new PushUtils()
+                mPushUtils.doTask(rootDir,"[Debug]",apkFile)
+            }
+        }
+    }
+}
+
+/**
+ * 发布包：打包、上传蒲公英、发送通知(钉钉、企业微信)、加固(乐固)、签名(V2)、多渠道打包(walle)
+ */
+tasks.register('publishBuildRelease') {
+    dependsOn "deleteApkPath"
+    dependsOn "app:assembleRelease"
+    doLast {
+        println "start assembleDomesticFinalRelease ....."
+        this.subprojects.eachWithIndex { Project project, int index ->
+            if (project.name == "app") {
+                String apkPath = project.buildDir.path + File.separator + "outputs" + File.separator + "apk" + File.separator + "release"
+                println("apkPath::"+apkPath)
+                def file = new File(apkPath)
+                FilenameFilter filter = new FilenameFilter() {
+                    @Override
+                    boolean accept(File tempFile, String name) {
+                        if (name.endsWith("apk")) {
+                            return true
+                        }
+                        return false
+                    }
+                }
+                File apkFile = file.listFiles(filter)[0]
+                def mPushUtils = new PushUtils()
+                mPushUtils.doPublishTask(rootDir,"[Release]",apkFile)
             }
         }
     }

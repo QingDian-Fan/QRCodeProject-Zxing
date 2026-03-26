@@ -15,6 +15,7 @@ data class DingRequestData(
 
     data class Markdown(
         val title: String,
-        val text: String
+        val text: String?=null,
+        val content: String?=null
     )
 }

@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
+/buildSrc/src/main/java/com/pgyer/groovy/Config.kt
