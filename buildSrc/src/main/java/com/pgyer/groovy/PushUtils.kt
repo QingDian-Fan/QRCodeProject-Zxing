@@ -50,8 +50,9 @@ class PushUtils {
     }
 
 
+
     /**
-     * 发布包：打包、上传蒲公英、发送通知(钉钉、企业微信)、加固(乐固)、签名(V2)、多渠道打包(walle)
+     * 发布包：上传蒲公英、发送通知(钉钉、企业微信)、加固(乐固)、签名(V2)、多渠道打包(walle)
      */
     fun doPublishTask(rootDir: File, msg: String, apkFile: File){
         val responseData = uploaPgyerAPK(msg, apkFile)
